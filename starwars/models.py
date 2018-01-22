@@ -31,6 +31,9 @@ class Planet(DateTimeModel):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class People(DateTimeModel):
     """ A person i.e. - Luke Skywalker """
@@ -46,6 +49,9 @@ class People(DateTimeModel):
     homeworld = models.ForeignKey(Planet, related_name="residents", on_delete=models.CASCADE)
 
     def __unicode__(self):
+        return self.name
+
+    def __str__(self):
         return self.name
 
 
@@ -64,6 +70,9 @@ class Transport(DateTimeModel):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class Starship(Transport):
     """ A starship is a transport with a hypderdrive """
@@ -76,6 +85,9 @@ class Starship(Transport):
         related_name="starships",
         blank=True
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Vehicle(Transport):
@@ -105,6 +117,9 @@ class Species(DateTimeModel):
     people = models.ManyToManyField(People, related_name="species")
 
     def __unicode__(self):
+        return self.name
+
+    def __str__(self):
         return self.name
 
 
@@ -145,6 +160,9 @@ class Film(DateTimeModel):
     )
 
     def __unicode__(self):
+        return self.title
+
+    def __str__(self):
         return self.title
 
 

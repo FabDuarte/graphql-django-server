@@ -1,18 +1,20 @@
 import graphene
-from .types import PeopleType, VehicleType, FilmType
-from starwars.models import People, Vehicle, Film
+from .types import PeopleType, FilmType
+from .mutations import CreateFilm
+from starwars.models import People, Film
 from graphene_django.filter import DjangoFilterConnectionField
-from graphene import resolve_only_args, Node
 from graphene_django.debug import DjangoDebug
 
 
 class Query(graphene.ObjectType):
     all_people = DjangoFilterConnectionField(PeopleType)
     all_films = DjangoFilterConnectionField(FilmType)
+    my_films = DjangoFilterConnectionField(FilmType)
 
-    people = Node.Field(PeopleType)
+    """people = Node.Field(PeopleType)
     films = Node.Field(FilmType)
-    viewer = graphene.Field(lambda: Query)
+    """
+
     debug = graphene.Field(DjangoDebug, name='__debug')
 
     def resolve_viewer(self, *args, **kwargs):
@@ -24,5 +26,15 @@ class Query(graphene.ObjectType):
     def resolve_all_films(self, info, **kwargs):
         return Film.objects.all()
 
+    def resolve_my_films(self, info, **kwargs):
+        if not info.context.user.is_authenticated:
+            return Film.objects.none()
+        else:
+            return Film.objects.filter(owner=info.context.user)
 
-schema = graphene.Schema(query=Query)
+
+class Mutations(graphene.ObjectType):
+    create_film = CreateFilm.Field(Film)
+
+
+schema = graphene.Schema(query=Query, mutation=Mutations)

@@ -115,9 +115,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-FIXTURE_DIRS = (os.path.join(BASE_DIR, 'starwars/fixtures'), )
-
+FIXTURE_DIRS = (os.path.join(BASE_DIR, 'starwars/fixtures'),)
 
 GRAPHENE = {
-    'SCHEMA': 'starwars.graphql.schema.schema'
+    'SCHEMA': 'starwars.graphql.schema.schema',
+    'MIDDLEWARE': [
+        'graphene_django.debug.DjangoDebugMiddleware',
+    ]
 }

@@ -1,22 +1,7 @@
 import graphene
-import datetime
 from graphene_django.types import DjangoObjectType
 from starwars.models import People, Transport, Species, Vehicle, Starship, Planet, Film
-from graphene import resolve_only_args, Node
-
-
-def connection_for_type(_type):
-    class Connection(graphene.Connection):
-        total_count = graphene.Int()
-
-        class Meta:
-            name = _type._meta.name + 'Connection'
-            node = _type
-
-        def resolve_total_count(self, args, context, info):
-            return self.length
-
-    return Connection
+from graphene import Node
 
 
 class PeopleType(DjangoObjectType):
@@ -27,7 +12,12 @@ class PeopleType(DjangoObjectType):
         interfaces = (Node,)
 
 
-PeopleType.Connection = connection_for_type(PeopleType)
+class FilmType(DjangoObjectType):
+    class Meta:
+        model = Film
+        exclude_fields = ('created', 'edited')
+        filter_fields = ('title', 'episode_id')
+        interfaces = (Node,)
 
 
 class TransportType(DjangoObjectType):
@@ -55,12 +45,20 @@ class PlanterType(DjangoObjectType):
         model = Planet
 
 
-class FilmType(DjangoObjectType):
-    class Meta:
-        model = Film
-        exclude_fields = ('created', 'edited')
-        filter_fields = ('title', 'episode_id')
-        interfaces = (Node,)
+# Connections
+def connection_for_type(_type):
+    class Connection(graphene.Connection):
+        total_count = graphene.Int()
+
+        class Meta:
+            name = _type._meta.name + 'Connection'
+            node = _type
+
+        def resolve_total_count(self, args, context, info):
+            return self.length
+
+    return Connection
 
 
 FilmType.Connection = connection_for_type(FilmType)
+PeopleType.Connection = connection_for_type(PeopleType)

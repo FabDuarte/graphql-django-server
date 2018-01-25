@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
     'starwars'
 ]
 
@@ -115,3 +116,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 FIXTURE_DIRS = (os.path.join(BASE_DIR, 'starwars/fixtures'), )
+
+
+GRAPHENE = {
+    'SCHEMA': 'starwars.graphql.schema.schema'
+}

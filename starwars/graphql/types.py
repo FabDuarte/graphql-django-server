@@ -1,4 +1,5 @@
 import graphene
+import datetime
 from graphene_django.types import DjangoObjectType
 from starwars.models import People, Transport, Species, Vehicle, Starship, Planet, Film
 from graphene import Node
@@ -8,16 +9,23 @@ class PeopleType(DjangoObjectType):
     class Meta:
         model = People
         exclude_fields = ('created', 'edited')
-        filter_fields = ('name',)
+        filter_fields = {
+            'name': ['exact', 'icontains', 'istartswith']
+        }
         interfaces = (Node,)
 
 
 class FilmType(DjangoObjectType):
+    age = graphene.Int(description="Current year - release year")
+
     class Meta:
         model = Film
         exclude_fields = ('created', 'edited')
         filter_fields = ('title', 'episode_id')
         interfaces = (Node,)
+
+    def resolve_age(self, info):
+        return datetime.datetime.now().year - self.release_date.year
 
 
 class TransportType(DjangoObjectType):

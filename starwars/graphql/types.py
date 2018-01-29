@@ -48,9 +48,10 @@ class StarShipType(DjangoObjectType):
         model = Starship
 
 
-class PlanterType(DjangoObjectType):
+class PlanetType(DjangoObjectType):
     class Meta:
         model = Planet
+        exclude_fields = ('created', 'edited')
 
 
 # Connections
